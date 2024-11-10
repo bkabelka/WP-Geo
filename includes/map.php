@@ -125,7 +125,7 @@ class WPGeo_Map {
 			$styles .= $style . ':' . $value . ';';
 		}
 		
-		return sprintf( '<div id="%s" class="%s" style="%s">%s</div>', esc_attr( $this->get_dom_id() ), esc_attr( implode( ' ', $atts['classes'] ) ), esc_attr( $styles ), $atts['content'] );
+		return sprintf( '<div class="img"><div id="%s" class="%s" style="%s">%s</div></div>', esc_attr( $this->get_dom_id() ), esc_attr( implode( ' ', $atts['classes'] ) ), esc_attr( $styles ), $atts['content'] );
 	}
 	
 	/**
