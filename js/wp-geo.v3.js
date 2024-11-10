@@ -47,12 +47,15 @@ function wpgeo_createIcon(width, height, anchorX, anchorY, image, transparent) {
 function wpgeo_createMarker(latlng, icon, title, link) {
 	var tooltip;
 	
-	var markerOptions = new google.maps.MarkerOptions();
-	markerOptions.icon = icon;
+	var iconImg = document.createElement('img');
+	iconImg.src = icon.url;
+	
+	var markerOptions = new google.maps.marker.AdvancedMarkerElementOptions();
+	markerOptions.content = iconImg;
 	markerOptions.position = latlng;
 	markerOptions.title = title;
 	
-	var marker = new google.maps.Marker(markerOptions);
+	var marker = new google.maps.marker.AdvancedMarkerElement(markerOptions);
 	
 	// Create a custom tooltip
 	if (title) {
@@ -63,15 +66,15 @@ function wpgeo_createMarker(latlng, icon, title, link) {
 	marker.link = link;
 	
 	if (tooltip) {
-		google.maps.event.addListener(marker, 'mouseover', wpgeo_markerOverHandler);
-		google.maps.event.addListener(marker, 'mouseout', wpgeo_markerOutHandler);
+		marker.content.addEventListener('mouseover', wpgeo_markerOverHandler);
+		marker.content.addEventListener('mouseout', wpgeo_markerOutHandler);
 	}
 	if (link) {
 		google.maps.event.addListener(marker, 'click', wpgeo_markerClickHandler);
 	}
 	
 	marker.setMap(map);
-	bounds.extend(marker.getPosition());
+	bounds.extend(marker.position);
 	return marker;
 }
 
@@ -81,12 +84,15 @@ function wpgeo_createMarker(latlng, icon, title, link) {
 function wpgeo_createMarker2(map, latlng, icon, title, link) {
 	var tooltip;
 	
-	var markerOptions = new google.maps.MarkerOptions();
-	markerOptions.icon = icon;
+	var iconImg = document.createElement('img');
+	iconImg.src = icon.url;
+	
+	var markerOptions = new google.maps.marker.AdvancedMarkerElementOptions();
+	markerOptions.content = iconImg;
 	markerOptions.position = latlng;
 	markerOptions.title = title;
 	
-	var marker = new google.maps.Marker(markerOptions);
+	var marker = new google.maps.marker.AdvancedMarkerElement(markerOptions);
 	
 	// Create a custom tooltip
 	if (title) {
@@ -97,8 +103,8 @@ function wpgeo_createMarker2(map, latlng, icon, title, link) {
 	marker.link = link;
 	
 	if (tooltip) {
-		google.maps.event.addListener(marker, 'mouseover', wpgeo_markerOverHandler);
-		google.maps.event.addListener(marker, 'mouseout', wpgeo_markerOutHandler);
+		marker.content.addEventListener('mouseover', wpgeo_markerOverHandler);
+		marker.content.addEventListener('mouseout', wpgeo_markerOutHandler);
 	}
 	if (link) {
 		google.maps.event.addListener(marker, 'click', wpgeo_markerClickHandler);

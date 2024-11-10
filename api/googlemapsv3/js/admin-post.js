@@ -10,6 +10,7 @@
 			
 			// Define map
 			WPGeo_Admin.map = new google.maps.Map(document.getElementById(WPGeo_Admin.map_dom_id), {
+				mapId          : WPGeo_Admin.map_dom_id,
 				scrollwheel    : false,
 				zoom           : parseInt(WPGeo_Admin.zoom, 10),
 				center         : new google.maps.LatLng(WPGeo_Admin.mapCentreX, WPGeo_Admin.mapCentreY),
@@ -19,33 +20,32 @@
 			});
 			
 			// Define marker
-			WPGeo_Admin.marker = new google.maps.Marker({
+			WPGeo_Admin.marker = new google.maps.marker.AdvancedMarkerElement({
 				position  : new google.maps.LatLng(WPGeo_Admin.latitude, WPGeo_Admin.longitude),
-				map       : WPGeo_Admin.map,
-				draggable : true,
-				visible   : WPGeo_Admin.hideMarker == 0
+				map       : WPGeo_Admin.hideMarker == 0 ? WPGeo_Admin.map : null,
+				gmpDraggable : true,
 			});
 			
 			// Update marker location
 			$("#wpgeo_location").bind("WPGeo_updateMarkerLatLng", function(e) {
-				WPGeo_Admin.marker.setPosition(e.latLng);
-				WPGeo_Admin.marker.setVisible(true);
+				WPGeo_Admin.marker.position = e.latLng;
+				WPGeo_Admin.marker.setMap(WPGeo_Admin.map);
 			});
 			
 			// Update location field
 			$("#wpgeo_location").bind("WPGeo_updateLatLngField", function(e) {
 				if ( e.lat == '' || e.lng == '' ) {
-					WPGeo_Admin.marker.setVisible(false);
+					WPGeo_Admin.marker.setMap(null);
 				} else {
 					var latLng = new google.maps.LatLng(e.lat, e.lng);
 					WPGeo_Admin.map.setCenter(latLng);
-					WPGeo_Admin.marker.setPosition(latLng);
-					WPGeo_Admin.marker.setVisible(true);
+					WPGeo_Admin.marker.position = latLng;
+					WPGeo_Admin.marker.setMap(WPGeo_Admin.map);
 					$("#wpgeo_location").trigger({
 						type   : 'WPGeo_updateMapCenter',
 						latLng : latLng,
-						lat    : latLng.lat(),
-						lng    : latLng.lng()
+						lat    : latLng.lat,
+						lng    : latLng.lng
 					});
 				}
 			});
@@ -55,8 +55,8 @@
 				$("#wpgeo_location").trigger({
 					type   : 'WPGeo_updateMarkerLatLng',
 					latLng : e.latLng,
-					lat    : e.latLng.lat(),
-					lng    : e.latLng.lng()
+					lat    : e.latLng.lat,
+					lng    : e.latLng.lng
 				});
 			});
 			
@@ -74,8 +74,8 @@
 			$("#wpgeo_location").trigger({
 				type   : 'WPGeo_updateMapCenter',
 				latLng : WPGeo_Admin.map.getCenter(),
-				lat    : WPGeo_Admin.map.getCenter().lat(),
-				lng    : WPGeo_Admin.map.getCenter().lng(),
+				lat    : WPGeo_Admin.map.getCenter().lat,
+				lng    : WPGeo_Admin.map.getCenter().lng,
 			});
 			// Set map zoom value in our Map Settings checkbox
 			$("#wpgeo_location").trigger({
@@ -100,8 +100,8 @@
 				$("#wpgeo_location").trigger({
 					type   : 'WPGeo_updateMapCenter',
 					latLng : WPGeo_Admin.map.getCenter(),
-					lat    : WPGeo_Admin.map.getCenter().lat(),
-					lng    : WPGeo_Admin.map.getCenter().lng(),
+					lat    : WPGeo_Admin.map.getCenter().lat,
+					lng    : WPGeo_Admin.map.getCenter().lng,
 				});
 			});
 			
@@ -109,20 +109,20 @@
 			google.maps.event.addListener(WPGeo_Admin.marker, "dragend", function(event) {
 				$("#wpgeo_location").trigger({
 					type   : 'WPGeo_updateMarkerLatLng',
-					latLng : WPGeo_Admin.marker.getPosition(),
-					lat    : WPGeo_Admin.marker.getPosition().lat(),
-					lng    : WPGeo_Admin.marker.getPosition().lng(),
+					latLng : WPGeo_Admin.marker.position,
+					lat    : WPGeo_Admin.marker.position.lat,
+					lng    : WPGeo_Admin.marker.position.lng,
 				});
 			});
 			
 			// Hide marker?
 			$("#wpgeo_location").bind("WPGeo_hideMarker", function(e){
-				WPGeo_Admin.marker.setVisible(false);
+				WPGeo_Admin.marker.setMap(null);
 			});
 			
 			// Move to center marker
 			$("#wpgeo_location").bind("WPGeo_centerLocation", function(e){
-				WPGeo_Admin.map.setCenter(WPGeo_Admin.marker.getPosition());
+				WPGeo_Admin.map.setCenter(WPGeo_Admin.marker.position);
 			});
 			
 			// Search Location
@@ -135,19 +135,19 @@
 					}, function(results, status) {
 						if (status == google.maps.GeocoderStatus.OK) {
 							WPGeo_Admin.map.setCenter(results[0].geometry.location);
-							WPGeo_Admin.marker.setPosition(results[0].geometry.location);
-							WPGeo_Admin.marker.setVisible(true);
+							WPGeo_Admin.marker.position = results[0].geometry.location;
+							WPGeo_Admin.marker.setMap(WPGeo_Admin.map);
 							$("#wpgeo_location").trigger({
 								type   : 'WPGeo_updateMarkerLatLng',
 								latLng : results[0].geometry.location,
-								lat    : results[0].geometry.location.lat(),
-								lng    : results[0].geometry.location.lng()
+								lat    : results[0].geometry.location.lat,
+								lng    : results[0].geometry.location.lng
 							});
 							$("#wpgeo_location").trigger({
 								type   : 'WPGeo_updateMapCenter',
 								latLng : results[0].geometry.location,
-								lat    : results[0].geometry.location.lat(),
-								lng    : results[0].geometry.location.lng()
+								lat    : results[0].geometry.location.lat,
+								lng    : results[0].geometry.location.lng
 							});
 						} else {
 							alert(e.address + " not found");

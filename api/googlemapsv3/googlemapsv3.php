@@ -56,6 +56,9 @@ class WPGeo_API_GoogleMapsV3 extends WPGeo_API {
 			// PATCH for required parameter
 			'callback' => 'Function.prototype',
 			// END PATCH
+			// PATCH for switch from deprecated google.maps.Marker to google.maps.marker.AdvancedMarkerElement
+			'libraries' => 'marker',
+			// END PATCH
 		);
 		$api_key = $wpgeo->get_google_api_key();
 		if ( ! empty( $api_key ) ) {
@@ -148,7 +151,9 @@ class WPGeo_API_GoogleMapsV3 extends WPGeo_API {
 			if ( ! is_null( $post ) ) {
 				$icon = 'wpgeo_icon_' . apply_filters( 'wpgeo_marker_icon', $post_icon, $post, 'widget' );
 			}
-			$markers .= 'var marker_' . $i . '_' . $map->get_js_id() . ' = new google.maps.Marker({ position:new google.maps.LatLng(' . $coord->get_delimited() . '), map:' . $map->get_js_id() . ', icon: ' . $icon . ' });' . "\n";
+			$markers .= 'var img_' . $i . '_' . $map->get_js_id() . ' = document.createElement(\'img\');';
+			$markers .= 'img_' . $i . '_' . $map->get_js_id() . '.src = ' . $icon . '.url;';
+			$markers .= 'var marker_' . $i . '_' . $map->get_js_id() . ' = new google.maps.marker.AdvancedMarkerElement({ position:new google.maps.LatLng(' . $coord->get_delimited() . '), map:' . $map->get_js_id() . ', content: img_' . $i . '_' . $map->get_js_id() . ' });' . "\n";
 			if ( ! empty( $link ) ) {
 				$markers .= 'google.maps.event.addListener(marker_' . $i . '_' . $map->get_js_id() . ', "click", function() {
 						window.location.href = "' . $link . '";
@@ -158,10 +163,10 @@ class WPGeo_API_GoogleMapsV3 extends WPGeo_API {
 			if ( ! empty( $title ) ) {
 				$markers .= '
 					var tooltip_' . $i . '_' . $map->get_js_id() . ' = new Tooltip(marker_' . $i . '_' . $map->get_js_id() . ', \'' . esc_js( $title ) . '\');
-					google.maps.event.addListener(marker_' . $i . '_' . $map->get_js_id() . ', "mouseover", function() {
+					marker_' . $i . '_' . $map->get_js_id() . '.content.addEventListener( "mouseover", function(e) {
 						tooltip_' . $i . '_' . $map->get_js_id() . '.show();
 					});
-					google.maps.event.addListener(marker_' . $i . '_' . $map->get_js_id() . ', "mouseout", function() {
+					marker_' . $i . '_' . $map->get_js_id() . '.content.addEventListener( "mouseout", function(e) {
 						tooltip_' . $i . '_' . $map->get_js_id() . '.hide();
 					});
 					';
@@ -234,6 +239,7 @@ class WPGeo_API_GoogleMapsV3 extends WPGeo_API {
 					if (document.getElementById("' . $map->get_dom_id() . '")) {
 						var bounds = new google.maps.LatLngBounds();
 						var mapOptions = {
+							mapId              : "' . $map->get_dom_id() . '",
 							center             : new google.maps.LatLng(' . $center_coord->get_delimited() . '),
 							zoom               : ' . $map->get_map_zoom() . ',
 							mapTypeId          : ' . apply_filters( 'wpgeo_api_string', 'google.maps.MapTypeId.ROADMAP', $map->get_map_type(), 'maptype' ) . ',
