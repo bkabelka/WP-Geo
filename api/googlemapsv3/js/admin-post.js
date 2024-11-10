@@ -34,7 +34,7 @@
 			
 			// Update location field
 			$("#wpgeo_location").bind("WPGeo_updateLatLngField", function(e) {
-				if ( e.lat == '' || e.lng == '' ) {
+				if ( e.lat == '' || e.lng == '' || isNaN(e.lat) || isNaN(e.lng) ) {
 					WPGeo_Admin.marker.setMap(null);
 				} else {
 					var latLng = new google.maps.LatLng(e.lat, e.lng);
