@@ -53,6 +53,9 @@ class WPGeo_API_GoogleMapsV3 extends WPGeo_API {
 		global $wpgeo;
 		$googlemaps_js_args = array(
 			'language' => $wpgeo->get_googlemaps_locale(),
+			// PATCH for required parameter
+			'callback' => 'Function.prototype',
+			// END PATCH
 		);
 		$api_key = $wpgeo->get_google_api_key();
 		if ( ! empty( $api_key ) ) {
