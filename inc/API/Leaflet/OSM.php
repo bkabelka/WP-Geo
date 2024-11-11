@@ -224,6 +224,7 @@ class OSM extends WPGeo_API {
 					';
 			foreach ( $maps as $map ) {
 				$center_coord = $map->get_map_centre();
+				$show_zoom_control = $map->show_control( 'zoom' );
 
 				echo '
 					if (document.getElementById("' . $map->get_dom_id() . '")) {
@@ -232,8 +233,11 @@ class OSM extends WPGeo_API {
 						var mapOptions = {
 							center          : [' . $center_coord->get_delimited() . '],
 							zoom            : ' . $map->get_map_zoom() . ',
-							zoomControl     : ' . (int) $map->show_control( 'zoom' ) . ',
-							scrollWheelZoom : false
+							zoomControl     : ' . (int) $show_zoom_control . ',
+							boxZoom         : ' . (int) $show_zoom_control . ',
+							doubleClickZoom : ' . (int) $show_zoom_control . ',
+							scrollWheelZoom : ' . (int) $show_zoom_control . ',
+							touchZoom       : ' . (int) $show_zoom_control . '
 						};
 
 						var ' . $map->get_js_id() . ' = L.map("' . $map->get_dom_id() . '", mapOptions);
