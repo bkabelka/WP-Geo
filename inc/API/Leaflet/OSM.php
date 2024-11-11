@@ -39,9 +39,9 @@ class OSM extends WPGeo_API {
 
 		global $wpgeo;
 
-		wp_register_style( 'leaflet', 'https://unpkg.com/leaflet@1.6.0/dist/leaflet.css', false, $wpgeo->version );
+		wp_register_style( 'leaflet', WPGEO_URL . 'inc/API/Leaflet/css/leaflet.css', false, $wpgeo->version );
 
-		wp_register_script( 'leaflet', 'https://unpkg.com/leaflet@1.6.0/dist/leaflet.js', false, $wpgeo->version );
+		wp_register_script( 'leaflet', WPGEO_URL . 'inc/API/Leaflet/js/leaflet.js', false, $wpgeo->version );
 		wp_register_script( 'wpgeo', WPGEO_URL . 'js/wp-geo.v3.js', array( 'jquery', 'wpgeo_tooltip' ), $wpgeo->version );
 		wp_register_script( 'wpgeo_admin_post_leaflet', WPGEO_URL . 'inc/API/Leaflet/js/admin-post-v3.js', array( 'jquery', 'wpgeo_admin_post', 'leaflet' ), $wpgeo->version );
 
